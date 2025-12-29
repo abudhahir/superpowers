@@ -1,5 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { handleActivateAgents } from './tools/activate-agents.js';
 
 export function createMCPServer() {
   const serverInfo = {
@@ -9,12 +10,10 @@ export function createMCPServer() {
 
   const server = new McpServer(serverInfo);
 
-  // Register placeholder tools
+  // Register activate_agents tool with real implementation
   server.registerTool('activate_agents', {
-    description: 'Activate agents based on user message',
-  }, async () => ({
-    content: [{ type: 'text', text: 'Not implemented' }],
-  }));
+    description: 'Analyze user message and activate appropriate agents',
+  }, handleActivateAgents);
 
   server.registerTool('get_agent_persona', {
     description: 'Get agent persona details',
