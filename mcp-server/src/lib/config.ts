@@ -40,7 +40,7 @@ const ConfigSchema = z.object({
   }),
 });
 
-type Config = z.infer<typeof ConfigSchema>;
+export type Config = z.infer<typeof ConfigSchema>;
 
 const DEFAULT_CONFIG: Config = {
   version: '2.0.0',
@@ -93,10 +93,14 @@ export async function loadConfig(): Promise<Config> {
     const content = await fs.readFile(configPath, 'utf8');
     const config = JSON.parse(content);
     return validateConfig(config);
-  } catch (error) {
-    // Config doesn't exist, create default
-    await saveConfig(DEFAULT_CONFIG);
-    return DEFAULT_CONFIG;
+  } catch (error: any) {
+    // Only create default if file doesn't exist
+    if (error.code === 'ENOENT') {
+      await saveConfig(DEFAULT_CONFIG);
+      return DEFAULT_CONFIG;
+    }
+    // For other errors (corrupted JSON, validation failures), throw with helpful message
+    throw new Error(`Failed to load config from ${configPath}: ${error.message}`);
   }
 }
 
@@ -115,5 +119,5 @@ export function validateConfig(config: unknown): Config {
 }
 
 export function getDefaultConfig(): Config {
-  return { ...DEFAULT_CONFIG };
+  return structuredClone(DEFAULT_CONFIG);
 }
