@@ -1,0 +1,10 @@
+description = "Interactive design exploration (alias for brainstorming)"
+prompt = """
+I'm using the brainstorming skill to explore this topic.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/brainstorming/SKILL.md"

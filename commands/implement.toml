@@ -1,0 +1,10 @@
+description = "Implement with subagents (alias for subagent-driven-development)"
+prompt = """
+I'm using the subagent-driven-development skill to execute this plan.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/subagent-driven-development/SKILL.md"
