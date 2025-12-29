@@ -8,6 +8,7 @@ coverage/
 # Build
 dist/
 build/
+mcp-server/dist/
 
 # IDE
 .vscode/
