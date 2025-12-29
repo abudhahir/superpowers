@@ -1,0 +1,10 @@
+description = "Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation"
+prompt = """
+I'm using the receiving-code-review skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/receiving-code-review/SKILL.md"

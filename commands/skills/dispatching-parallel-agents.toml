@@ -1,0 +1,10 @@
+description = "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies"
+prompt = """
+I'm using the dispatching-parallel-agents skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/dispatching-parallel-agents/SKILL.md"

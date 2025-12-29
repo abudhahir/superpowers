@@ -1,0 +1,10 @@
+description = "Use when completing tasks, implementing major features, or before merging to verify work meets requirements"
+prompt = """
+I'm using the requesting-code-review skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/requesting-code-review/SKILL.md"

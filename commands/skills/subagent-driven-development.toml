@@ -1,0 +1,10 @@
+description = "Use when executing implementation plans with independent tasks in the current session"
+prompt = """
+I'm using the subagent-driven-development skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/subagent-driven-development/SKILL.md"

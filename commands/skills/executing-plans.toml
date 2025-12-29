@@ -1,0 +1,10 @@
+description = "Use when you have a written implementation plan to execute in a separate session with review checkpoints"
+prompt = """
+I'm using the executing-plans skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/executing-plans/SKILL.md"

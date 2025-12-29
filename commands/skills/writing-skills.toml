@@ -1,0 +1,10 @@
+description = "Use when creating new skills, editing existing skills, or verifying skills work before deployment"
+prompt = """
+I'm using the writing-skills skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/writing-skills/SKILL.md"

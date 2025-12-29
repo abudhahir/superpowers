@@ -1,0 +1,10 @@
+description = "Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions"
+prompt = """
+I'm using the using-superpowers skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/using-superpowers/SKILL.md"

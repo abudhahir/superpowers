@@ -1,0 +1,10 @@
+description = "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes"
+prompt = """
+I'm using the systematic-debugging skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/systematic-debugging/SKILL.md"
