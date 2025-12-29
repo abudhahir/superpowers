@@ -1,0 +1,10 @@
+description = "Analyze message to see which agents would activate"
+prompt = """
+I'll analyze this message to show which agents would be activated:
+
+"${input}"
+
+Let me check the orchestration logic...
+"""
+
+# This will call the MCP tool to do dry-run analysis

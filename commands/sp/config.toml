@@ -1,0 +1,10 @@
+description = "View or modify configuration"
+prompt = """
+Configuration management for SupremePower.
+
+Command: ${command}
+Key: ${key}
+Value: ${value}
+
+Managing configuration...
+"""

@@ -1,0 +1,6 @@
+description = "Generate a custom agent for a specific domain"
+prompt = """
+I'll create a custom agent for: ${purpose}
+
+Generating agent definition...
+"""
