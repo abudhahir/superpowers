@@ -66,4 +66,56 @@ describe('extractConditionalBlocks', () => {
 
     expect(result).toEqual([]);
   });
+
+  // Critical Bug #1: Mixed pattern handling
+  it('extracts both bullet and inline patterns together', () => {
+    const content = `
+      If working with: authentication → security-engineer
+
+      Additional rules:
+      - database → database-specialist
+    `;
+
+    const result = extractConditionalBlocks(content);
+
+    expect(result).toHaveLength(2);
+    expect(result[0].condition).toBe('database');
+    expect(result[0].agents).toEqual(['database-specialist']);
+    expect(result[1].condition).toBe('authentication');
+    expect(result[1].agents).toEqual(['security-engineer']);
+  });
+
+  // Critical Bug #2: Numeric agent names
+  it('supports numeric characters in agent names', () => {
+    const content = `
+      If working with:
+      - authentication → security-engineer-v2
+      - testing → test-agent1 + test-agent2
+    `;
+
+    const result = extractConditionalBlocks(content);
+
+    expect(result).toHaveLength(2);
+    expect(result[0].condition).toBe('authentication');
+    expect(result[0].agents).toEqual(['security-engineer-v2']);
+    expect(result[1].condition).toBe('testing');
+    expect(result[1].agents).toEqual(['test-agent1', 'test-agent2']);
+  });
+
+  // Edge case: null/undefined input validation
+  it('handles null and undefined input gracefully', () => {
+    expect(extractConditionalBlocks(null)).toEqual([]);
+    expect(extractConditionalBlocks(undefined)).toEqual([]);
+    expect(extractConditionalBlocks('')).toEqual([]);
+  });
+
+  // Edge case: numeric characters in inline patterns
+  it('supports numeric characters in inline pattern agent names', () => {
+    const content = 'When working with: database v2 → backend-architect-v2 + db-specialist-1';
+
+    const result = extractConditionalBlocks(content);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].agents).toEqual(['backend-architect-v2', 'db-specialist-1']);
+  });
 });

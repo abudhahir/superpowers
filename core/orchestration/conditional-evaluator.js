@@ -15,7 +15,7 @@ export function extractConditionalBlocks(content) {
   const conditionals = [];
 
   // Match bullet-style patterns: "- condition → agent-name"
-  const bulletPattern = /-\s*([^→\n]+)→\s*([a-z-]+(?:\s*\+\s*[a-z-]+)*)/gi;
+  const bulletPattern = /-\s*([^→\n]+)→\s*([a-z0-9-]+(?:\s*\+\s*[a-z0-9-]+)*)/gi;
   let match;
 
   while ((match = bulletPattern.exec(content)) !== null) {
@@ -34,26 +34,28 @@ export function extractConditionalBlocks(content) {
     });
   }
 
-  // If no bullet patterns found, try inline patterns: "If/When working with: condition → agent"
-  if (conditionals.length === 0) {
-    const inlinePattern =
-      /(?:if|when)\s+working\s+with[:\s]+([^→]+)→\s+([a-z-]+(?:\s*\+\s*[a-z-]+)*)/gi;
+  // Also try inline patterns: "If/When working with: condition → agent"
+  // Must be on same line (no newlines in condition)
+  const inlinePattern =
+    /(?:if|when)\s+working\s+with[:\s]+([^→]+)→\s+([a-z0-9-]+(?:\s*\+\s*[a-z0-9-]+)*)/gi;
 
-    while ((match = inlinePattern.exec(content)) !== null) {
-      const condition = match[1].trim();
-      const agentsString = match[2].trim();
+  while ((match = inlinePattern.exec(content)) !== null) {
+    const condition = match[1].trim();
+    const agentsString = match[2].trim();
 
-      // Split multiple agents by +
-      const agents = agentsString
-        .split('+')
-        .map((a) => a.trim())
-        .filter(Boolean);
+    // Skip if condition contains newline or starts with bullet (matching bullet list by accident)
+    if (match[1].includes('\n') || condition.startsWith('-')) continue;
 
-      conditionals.push({
-        condition,
-        agents,
-      });
-    }
+    // Split multiple agents by +
+    const agents = agentsString
+      .split('+')
+      .map((a) => a.trim())
+      .filter(Boolean);
+
+    conditionals.push({
+      condition,
+      agents,
+    });
   }
 
   return conditionals;
