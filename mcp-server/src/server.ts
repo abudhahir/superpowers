@@ -12,21 +12,18 @@ export function createMCPServer() {
   // Register placeholder tools
   server.registerTool('activate_agents', {
     description: 'Activate agents based on user message',
-    inputSchema: {},
   }, async () => ({
     content: [{ type: 'text', text: 'Not implemented' }],
   }));
 
   server.registerTool('get_agent_persona', {
     description: 'Get agent persona details',
-    inputSchema: {},
   }, async () => ({
     content: [{ type: 'text', text: 'Not implemented' }],
   }));
 
   server.registerTool('list_skills', {
     description: 'List available skills',
-    inputSchema: {},
   }, async () => ({
     content: [{ type: 'text', text: 'Not implemented' }],
   }));
