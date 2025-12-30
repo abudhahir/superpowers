@@ -5,12 +5,16 @@ import * as fs from 'fs/promises';
 import { StateManager } from './lib/state-manager';
 import { SkillParser } from './lib/skill-parser';
 import { ContextGenerator } from './lib/context-generator';
+import { WorkflowProvider } from './workflow-provider';
 
 export function activate(context: vscode.ExtensionContext) {
   const homeDir = os.homedir();
   const statePath = path.join(homeDir, '.supremepower', 'state.json');
   const skillsPath = path.join(homeDir, '.supremepower', 'skills');
   const stateManager = new StateManager(statePath);
+
+  const workflowProvider = new WorkflowProvider(stateManager, skillsPath);
+  vscode.window.registerTreeDataProvider('supremepower-workflow', workflowProvider);
 
   async function updateCopilotContext(state: any, stepInstructions: string) {
     if (vscode.workspace.workspaceFolders) {
@@ -54,6 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
         
         await updateCopilotContext(newState, nextStep.context.join('\n'));
       }
+      workflowProvider.refresh();
     } catch (e: any) {
       vscode.window.showErrorMessage(`Error: ${e.message}`);
     }
@@ -75,6 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
         
         vscode.window.showInformationMessage(`Started skill: ${skill}`);
         await updateCopilotContext(newState, firstStep.context.join('\n'));
+        workflowProvider.refresh();
       } catch (e: any) {
         vscode.window.showErrorMessage(`Failed to start skill: ${e.message}`);
       }
