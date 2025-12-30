@@ -20,7 +20,7 @@ export async function handleNextStep() {
 
   if (!state.session.activeSkill) {
     return {
-      content: [{ type: 'text', text: 'Error: No active skill session.' }],
+      content: [{ type: 'text' as const, text: 'Error: No active skill session.' }],
       isError: true,
     };
   }
@@ -55,11 +55,12 @@ export async function handleNextStep() {
     }
 
     return {
-      content: [{ type: 'text', text: responseText }],
+      content: [{ type: 'text' as const, text: responseText }],
+      isError: false,
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
-      content: [{ type: 'text', text: `Error: ${error.message}` }],
+      content: [{ type: 'text' as const, text: `Error: ${error.message}` }],
       isError: true,
     };
   }

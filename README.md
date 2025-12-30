@@ -20,6 +20,8 @@ Passive markdown instructions are okay, but they don't know *when* you are done 
 
 ## Quick Start
 
+> **Detailed Guide:** [VS Code Extension Documentation](docs/vscode-extension.md)
+
 1.  **Install the Extension:**
     ```bash
     cd vscode-extension
