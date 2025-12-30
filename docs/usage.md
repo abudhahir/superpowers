@@ -51,17 +51,17 @@ Create detailed, step-by-step implementation plan with success criteria.
 - Defines success criteria and testing approach
 - Creates structured plan document
 
-**Output:** Markdown plan with numbered steps, ready for `/execute-plan`
+**Output:** Markdown plan with numbered steps, ready for `/skills:executing-plans`
 
 ---
 
-#### `/execute-plan` - Execute Implementation Plan
+#### `/skills:executing-plans` - Execute Implementation Plan
 
 Execute a multi-step plan with verification checkpoints.
 
 **Usage:**
 ```bash
-/execute-plan
+/skills:executing-plans
 # Prompts for plan file or paste plan content
 ```
 
@@ -137,13 +137,13 @@ Methodical debugging workflow for complex issues.
 
 ### Code Review Skills
 
-#### `/request-review` - Request Code Review
+#### `/skills:requesting-code-review` - Request Code Review
 
 Request thorough code review with specific focus areas.
 
 **Usage:**
 ```bash
-/request-review "authentication module"
+/skills:requesting-code-review "authentication module"
 # Optionally specify focus: security, performance, maintainability
 ```
 
@@ -157,13 +157,13 @@ Request thorough code review with specific focus areas.
 
 ---
 
-#### `/receive-review` - Process Review Feedback
+#### `/skills:receiving-code-review` - Process Review Feedback
 
 Systematically process and respond to code review feedback.
 
 **Usage:**
 ```bash
-/receive-review
+/skills:receiving-code-review
 # Paste review comments
 ```
 
@@ -177,13 +177,13 @@ Systematically process and respond to code review feedback.
 
 ### Git Workflow Skills
 
-#### `/finish-branch` - Complete Development Branch
+#### `/skills:finishing-a-development-branch` - Complete Development Branch
 
 Guides completion of development work before merging.
 
 **Usage:**
 ```bash
-/finish-branch
+/skills:finishing-a-development-branch
 ```
 
 **What it does:**
@@ -194,13 +194,13 @@ Guides completion of development work before merging.
 
 ---
 
-#### `/worktrees` - Manage Git Worktrees
+#### `/skills:using-git-worktrees` - Manage Git Worktrees
 
 Work on multiple branches simultaneously with git worktrees.
 
 **Usage:**
 ```bash
-/worktrees
+/skills:using-git-worktrees
 # Interactive prompts for creating/managing worktrees
 ```
 
@@ -215,13 +215,13 @@ Work on multiple branches simultaneously with git worktrees.
 
 ### Quality Assurance Skills
 
-#### `/verify` - Verification Before Completion
+#### `/skills:verification-before-completion` - Verification Before Completion
 
 Verify work before claiming it's complete.
 
 **Usage:**
 ```bash
-/verify
+/skills:verification-before-completion
 ```
 
 **What it does:**
@@ -234,13 +234,13 @@ Verify work before claiming it's complete.
 
 ---
 
-#### `/parallel` - Dispatch Parallel Agents
+#### `/skills:dispatching-parallel-agents` - Dispatch Parallel Agents
 
 Coordinate multiple independent tasks across agents.
 
 **Usage:**
 ```bash
-/parallel
+/skills:dispatching-parallel-agents
 # Describe multiple tasks
 ```
 
@@ -256,13 +256,13 @@ Coordinate multiple independent tasks across agents.
 
 ### Meta Skills
 
-#### `/using-superpowers` - Find and Use Skills
+#### `/skills:using-superpowers` - Find and Use Skills
 
 Meta-skill for discovering which skill to use.
 
 **Usage:**
 ```bash
-/using-superpowers "I need to implement a new feature"
+/skills:using-superpowers "I need to implement a new feature"
 ```
 
 **What it does:**
@@ -272,13 +272,13 @@ Meta-skill for discovering which skill to use.
 
 ---
 
-#### `/write-skill` - Create New Skills
+#### `/skills:writing-skills` - Create New Skills
 
 Create new custom skills following TDD methodology.
 
 **Usage:**
 ```bash
-/write-skill "domain-specific skill name"
+/skills:writing-skills "domain-specific skill name"
 ```
 
 **What it does:**
@@ -524,17 +524,17 @@ gemini-sp /tdd
 
 **Step 4: Verify**
 ```bash
-/verify
+/skills:verification-before-completion
 ```
 
 **Step 5: Request Review**
 ```bash
-/request-review "OAuth2 implementation" --focus=security
+/skills:requesting-code-review "OAuth2 implementation" --focus=security
 ```
 
 **Step 6: Finish**
 ```bash
-/finish-branch
+/skills:finishing-a-development-branch
 ```
 
 ---
@@ -558,12 +558,12 @@ Follow debug workflow:
 
 **Step 3: Fix and verify**
 ```bash
-/verify
+/skills:verification-before-completion
 ```
 
 **Step 4: Request review**
 ```bash
-/request-review "rate limiting fix" --focus=performance
+/skills:requesting-code-review "rate limiting fix" --focus=performance
 ```
 
 ---
@@ -572,7 +572,7 @@ Follow debug workflow:
 
 **Step 1: Identify parallel tasks**
 ```bash
-/parallel
+/skills:dispatching-parallel-agents
 ```
 Tasks:
 - "Implement user profile API endpoint"
@@ -826,7 +826,7 @@ gemini-sp "optimize this React component"
 # Copy output
 /plan "implement feature X based on brainstorm"
 # Copy output
-/execute-plan
+/skills:executing-plans
 ```
 
 **6. Use wrapper for exploratory questions:**
