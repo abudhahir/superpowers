@@ -4,13 +4,13 @@ Universal skills and agent framework bringing Superpowers methodology to Gemini 
 
 ## Features
 
-- **14 Superpowers Skills** - Brainstorming, TDD, systematic debugging, code review, and more
+- **14 Superpowers Skills** - All skills accessible via `/skills:*` commands plus 5 short aliases
 - **13 Specialized Agents** - Automatic activation based on context and complexity
+- **6 Management Commands** - Agent control via `/sp:*` commands (agents, analyze, with, config, status, auto-agent-create)
 - **Hybrid Workflows** - Explicit slash commands or automatic orchestration
-- **Custom Agents** - Create domain-specific agents with `/sp:auto-agent-create`
-- **Native Integration** - Uses Gemini CLI's MCP extension system
-- **Smart Wrapper** - Automatic agent selection with `gemini-sp` command
-- **Flexible Configuration** - JSON-based config with runtime management
+- **Native Integration** - Uses Gemini CLI's MCP extension system with 5 MCP tools
+- **Smart Wrapper** - Automatic agent selection with `gemini-sp` command (optional)
+- **Flexible Configuration** - JSON-based config at `~/.supremepower/config.json`
 
 ## Quick Start
 
@@ -27,12 +27,21 @@ gemini
 
 ### Basic Usage
 
-**Invoke skills with slash commands:**
+**Invoke skills with short aliases:**
 ```bash
 /brainstorm "Phase 3 features"
 /tdd
 /plan "authentication system"
 /debug
+/implement
+```
+
+**Or use full skill names:**
+```bash
+/skills:brainstorming "Phase 3 features"
+/skills:test-driven-development
+/skills:writing-plans "authentication system"
+/skills:systematic-debugging
 ```
 
 **Manage agents:**
@@ -41,6 +50,8 @@ gemini
 /sp:analyze "your message"           # Preview agent activation
 /sp:with frontend-architect "help"   # Force specific agent
 /sp:config                           # View/edit configuration
+/sp:status                           # Show system status
+/sp:auto-agent-create                # Create custom agent
 ```
 
 **Use smart wrapper for automatic orchestration:**
@@ -58,24 +69,37 @@ gemini-sp "help me build a React component with TypeScript"
 
 ## Available Skills
 
-All 14 Superpowers skills included:
+All 14 Superpowers skills included with short aliases and full names:
 
-| Skill | Command | Description |
-|-------|---------|-------------|
-| Brainstorming | `/brainstorm` | Interactive design exploration and requirements gathering |
-| Test-Driven Development | `/tdd` | Red-Green-Refactor methodology for robust code |
-| Writing Plans | `/plan` | Create detailed implementation plans |
-| Executing Plans | `/execute-plan` | Execute multi-step implementation plans |
-| Systematic Debugging | `/debug` | Methodical debugging workflow |
-| Subagent-Driven Development | `/implement` | Delegate independent tasks to subagents |
-| Requesting Code Review | `/request-review` | Request thorough code review |
-| Receiving Code Review | `/receive-review` | Process review feedback systematically |
-| Finishing Development Branch | `/finish-branch` | Complete and merge development work |
-| Using Git Worktrees | `/worktrees` | Manage parallel development with git worktrees |
-| Verification Before Completion | `/verify` | Verify work before claiming completion |
-| Dispatching Parallel Agents | `/parallel` | Coordinate multiple independent tasks |
-| Using Superpowers | `/using-superpowers` | Meta-skill for finding and using skills |
-| Writing Skills | `/write-skill` | Create new skills with TDD methodology |
+| Skill | Short Alias | Full Command | Description |
+|-------|-------------|--------------|-------------|
+| Brainstorming | `/brainstorm` | `/skills:brainstorming` | Interactive design exploration and requirements gathering |
+| Test-Driven Development | `/tdd` | `/skills:test-driven-development` | Red-Green-Refactor methodology for robust code |
+| Writing Plans | `/plan` | `/skills:writing-plans` | Create detailed implementation plans |
+| Executing Plans | - | `/skills:executing-plans` | Execute multi-step implementation plans |
+| Systematic Debugging | `/debug` | `/skills:systematic-debugging` | Methodical debugging workflow |
+| Subagent-Driven Development | `/implement` | `/skills:subagent-driven-development` | Delegate independent tasks to subagents |
+| Requesting Code Review | - | `/skills:requesting-code-review` | Request thorough code review |
+| Receiving Code Review | - | `/skills:receiving-code-review` | Process review feedback systematically |
+| Finishing Development Branch | - | `/skills:finishing-a-development-branch` | Complete and merge development work |
+| Using Git Worktrees | - | `/skills:using-git-worktrees` | Manage parallel development with git worktrees |
+| Verification Before Completion | - | `/skills:verification-before-completion` | Verify work before claiming completion |
+| Dispatching Parallel Agents | - | `/skills:dispatching-parallel-agents` | Coordinate multiple independent tasks |
+| Using Superpowers | - | `/skills:using-superpowers` | Meta-skill for finding and using skills |
+| Writing Skills | - | `/skills:writing-skills` | Create new skills with TDD methodology |
+
+## Management Commands
+
+Control agents and configuration with `/sp:*` commands:
+
+| Command | Description |
+|---------|-------------|
+| `/sp:agents` | List all available agents with their expertise areas |
+| `/sp:analyze <message>` | Preview which agents would activate for a message |
+| `/sp:with <agent> <message>` | Force activation of specific agent |
+| `/sp:auto-agent-create` | Create custom agent interactively |
+| `/sp:config [key] [value]` | View or edit configuration |
+| `/sp:status` | Show system status and diagnostics |
 
 ## Available Agents
 
@@ -193,9 +217,14 @@ The component tree is deep and we're seeing lag on user interactions."
 ### Example 2: Explicit Skill Invocation
 
 ```bash
+# Use short alias
 /tdd
-# Activates Testing Specialist agent automatically
-# Guides through Red-Green-Refactor cycle
+
+# Or use full command name
+/skills:test-driven-development
+
+# Both activate Testing Specialist agent automatically
+# and guide through Red-Green-Refactor cycle
 ```
 
 ### Example 3: Custom Agent Creation
@@ -204,13 +233,26 @@ The component tree is deep and we're seeing lag on user interactions."
 /sp:auto-agent-create
 # Interactive prompt to create domain-specific agent
 # Analyzes project context to suggest specializations
+# Saves to ~/.supremepower/agents/
 ```
 
-### Example 4: Configuration Management
+### Example 4: Agent Management
 
 ```bash
-/sp:config orchestration.agentActivationThreshold 6
-# Lowers activation threshold for more aggressive agent use
+# List all available agents
+/sp:agents
+
+# Preview which agents would activate for a message
+/sp:analyze "optimize database queries"
+
+# Force specific agent regardless of auto-detection
+/sp:with database-specialist "help with indexing"
+
+# View current configuration
+/sp:config
+
+# Check system status
+/sp:status
 ```
 
 ## Development
