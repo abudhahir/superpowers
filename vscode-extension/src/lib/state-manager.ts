@@ -1,4 +1,6 @@
 import * as fs from 'fs/promises';
+import { watch, FSWatcher } from 'fs';
+import { EventEmitter } from 'events';
 
 interface State {
   session: { id: string | null; activeSkill: string | null };
@@ -9,6 +11,8 @@ interface State {
 export class StateManager {
   private statePath: string;
   private defaultState: State;
+  private watcher: FSWatcher | null = null;
+  private events: EventEmitter = new EventEmitter();
 
   constructor(statePath: string) {
     this.statePath = statePath;
@@ -17,6 +21,26 @@ export class StateManager {
       workflow: { currentStep: 'IDLE', stepIndex: 0, completedSteps: [], context: {} },
       agents: { active: [], overrides: {} }
     };
+  }
+
+  public onStateChanged(callback: (state: State) => void) {
+    this.events.on('changed', callback);
+    if (!this.watcher) {
+      this.startWatching();
+    }
+  }
+
+  private startWatching() {
+    try {
+      this.watcher = watch(this.statePath, async (event) => {
+        if (event === 'change') {
+          const state = await this.load();
+          this.events.emit('changed', state);
+        }
+      });
+    } catch (e) {
+      console.error('Failed to start watching state file', e);
+    }
   }
 
   async load(): Promise<State> {
@@ -38,6 +62,13 @@ export class StateManager {
       agents: { ...currentState.agents, ...(partialState.agents || {}) }
     };
     await fs.writeFile(this.statePath, JSON.stringify(newState, null, 2));
+    this.events.emit('changed', newState);
     return newState;
+  }
+
+  dispose() {
+    if (this.watcher) {
+      this.watcher.close();
+    }
   }
 }
