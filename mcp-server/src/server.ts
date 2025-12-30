@@ -5,6 +5,7 @@ import { handleGetAgentPersona } from './tools/get-agent-persona.js';
 import { handleListSkills } from './tools/list-skills.js';
 import { handleFetchSkills } from './tools/fetch-skills.js';
 import { handleAutoAgentCreate } from './tools/auto-agent-create.js';
+import { handleNextStep } from './tools/next-step.js';
 
 export function createMCPServer() {
   const serverInfo = {
@@ -39,10 +40,15 @@ export function createMCPServer() {
     description: 'Automatically generate a new agent based on purpose description',
   }, handleAutoAgentCreate);
 
+  // Register next_step tool
+  server.registerTool('next_step', {
+    description: 'Advance to the next step in the active workflow',
+  }, handleNextStep);
+
   return {
     name: serverInfo.name,
     version: serverInfo.version,
-    listTools: () => ['activate_agents', 'get_agent_persona', 'list_skills', 'fetch_skills', 'auto_agent_create'],
+    listTools: () => ['activate_agents', 'get_agent_persona', 'list_skills', 'fetch_skills', 'auto_agent_create', 'next_step'],
     server,
   };
 }

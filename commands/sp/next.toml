@@ -1,0 +1,5 @@
+description = "Advance to the next step in the active workflow"
+
+prompt = """
+I'll advance to the next step in our current workflow.
+"""
