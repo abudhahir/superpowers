@@ -1,286 +1,313 @@
-# SupremePower for Gemini CLI
+# SupremePower Framework
 
-Universal skills and agent framework bringing Superpowers methodology to Gemini CLI.
+Universal skills and agent orchestration system for AI coding assistants.
 
-## Features
+## Overview
 
-- **14 Superpowers Skills** - All skills accessible via `/skills:*` commands plus 5 short aliases
-- **13 Specialized Agents** - Automatic activation based on context and complexity
-- **6 Management Commands** - Agent control via `/sp:*` commands (agents, analyze, with, config, status, auto-agent-create)
-- **Hybrid Workflows** - Explicit slash commands or automatic orchestration
-- **Native Integration** - Uses Gemini CLI's MCP extension system with 5 MCP tools
-- **Smart Wrapper** - Automatic agent selection with `gemini-sp` command (optional)
-- **Flexible Configuration** - JSON-based config at `~/.supremepower/config.json`
+SupremePower brings disciplined software development workflows—Test-Driven Development, systematic debugging, code review, and planning—to AI coding environments through a library of 14 battle-tested skills and 13 specialized agent personas.
 
-## Quick Start
+**Key Principle:** Skills invoke agents through natural language context hints and explicit conditions, ensuring the right expertise is activated for each task.
 
-### Installation
+## Supported Platforms
+
+SupremePower integrates with multiple AI coding platforms through platform-specific adapters that share a common core framework:
+
+| Platform | Integration Type | Status | Installation |
+|----------|------------------|--------|--------------|
+| **[Gemini CLI](docs/platforms/gemini-cli.md)** | MCP Extension | ✅ Complete | Native extension with slash commands |
+| **[Claude Code](docs/platforms/claude-code.md)** | Plugin | ✅ Complete | Marketplace plugin with hooks |
+| **[Codex](docs/platforms/codex.md)** | CLI Tools | ✅ Complete | Fetch-and-follow bootstrap |
+| **[OpenCode](docs/platforms/opencode.md)** | Plugin | ✅ Complete | Custom tools integration |
+
+**Choose your platform above for detailed installation and usage guides.**
+
+## Quick Start by Platform
+
+### Gemini CLI
 
 ```bash
-# Install from GitHub
-gemini extensions install https://github.com/superclaude-org/supremepower-gemini
+# Install extension
+gemini extensions install https://github.com/abudhahir/superpowers
 
-# Verify installation
-gemini
+# Use skills via slash commands
+/brainstorm "new feature design"
+/tdd
 /sp:agents
 ```
 
-### Basic Usage
+**[→ Full Gemini CLI Guide](docs/platforms/gemini-cli.md)**
 
-**Invoke skills with short aliases:**
+### Claude Code
+
 ```bash
-/brainstorm "Phase 3 features"
-/tdd
-/plan "authentication system"
-/debug
-/implement
+# Install from marketplace
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+
+# Use skills via Skill tool
+## Skills are automatically available
 ```
 
-**Or use full skill names:**
+**[→ Full Claude Code Guide](docs/platforms/claude-code.md)**
+
+### Codex
+
 ```bash
-/skills:brainstorming "Phase 3 features"
-/skills:test-driven-development
-/skills:writing-plans "authentication system"
-/skills:systematic-debugging
+# Clone and bootstrap
+git clone https://github.com/abudhahir/superpowers ~/.codex/superpowers
+~/.codex/superpowers/.codex/superpowers-codex bootstrap
+
+# Skills are now available in Codex
 ```
 
-**Manage agents:**
+**[→ Full Codex Guide](docs/platforms/codex.md)**
+
+### OpenCode
+
 ```bash
-/sp:agents                           # List available agents
-/sp:analyze "your message"           # Preview agent activation
-/sp:with frontend-architect "help"   # Force specific agent
-/sp:config                           # View/edit configuration
-/sp:status                           # Show system status
-/sp:auto-agent-create                # Create custom agent
+# Install to OpenCode plugins
+git clone https://github.com/abudhahir/superpowers ~/.config/opencode/superpowers
+
+# Skills available via use_skill tool
 ```
 
-**Use smart wrapper for automatic orchestration:**
-```bash
-gemini-sp "help me build a React component with TypeScript"
-# Agents automatically activated based on complexity and keywords
-```
+**[→ Full OpenCode Guide](docs/platforms/opencode.md)**
 
-## Documentation
+## Skills Library
 
-- [Installation Guide](docs/installation.md) - Complete setup instructions
-- [Usage Guide](docs/usage.md) - Detailed command examples and workflows
-- [Configuration Reference](docs/configuration.md) - All config options explained
-- [Troubleshooting](docs/troubleshooting.md) - Common issues and solutions
+All platforms share 14 Superpowers skills:
 
-## Available Skills
+### Process Skills
+- **brainstorming** - Design exploration through dialogue before coding
+- **writing-plans** - Create detailed implementation plans with TDD steps
+- **executing-plans** - Execute multi-step plans with checkpoints
+- **subagent-driven-development** - Delegate tasks to parallel subagents
 
-All 14 Superpowers skills included with short aliases and full names:
+### Testing & Quality
+- **test-driven-development** - RED-GREEN-REFACTOR methodology
+- **systematic-debugging** - Scientific debugging approach with hypotheses
+- **verification-before-completion** - Pre-commit verification checklist
 
-| Skill | Short Alias | Full Command | Description |
-|-------|-------------|--------------|-------------|
-| Brainstorming | `/brainstorm` | `/skills:brainstorming` | Interactive design exploration and requirements gathering |
-| Test-Driven Development | `/tdd` | `/skills:test-driven-development` | Red-Green-Refactor methodology for robust code |
-| Writing Plans | `/plan` | `/skills:writing-plans` | Create detailed implementation plans |
-| Executing Plans | - | `/skills:executing-plans` | Execute multi-step implementation plans |
-| Systematic Debugging | `/debug` | `/skills:systematic-debugging` | Methodical debugging workflow |
-| Subagent-Driven Development | `/implement` | `/skills:subagent-driven-development` | Delegate independent tasks to subagents |
-| Requesting Code Review | - | `/skills:requesting-code-review` | Request thorough code review |
-| Receiving Code Review | - | `/skills:receiving-code-review` | Process review feedback systematically |
-| Finishing Development Branch | - | `/skills:finishing-a-development-branch` | Complete and merge development work |
-| Using Git Worktrees | - | `/skills:using-git-worktrees` | Manage parallel development with git worktrees |
-| Verification Before Completion | - | `/skills:verification-before-completion` | Verify work before claiming completion |
-| Dispatching Parallel Agents | - | `/skills:dispatching-parallel-agents` | Coordinate multiple independent tasks |
-| Using Superpowers | - | `/skills:using-superpowers` | Meta-skill for finding and using skills |
-| Writing Skills | - | `/skills:writing-skills` | Create new skills with TDD methodology |
+### Collaboration
+- **requesting-code-review** - Structured review requests with context
+- **receiving-code-review** - Review feedback integration workflow
+- **finishing-a-development-branch** - Branch completion and cleanup
 
-## Management Commands
+### Tools
+- **using-git-worktrees** - Isolated workspace creation for parallel work
+- **dispatching-parallel-agents** - Multi-agent task coordination
+- **using-superpowers** - Meta-skill for discovering and using skills
+- **writing-skills** - TDD methodology for creating new skills
 
-Control agents and configuration with `/sp:*` commands:
+**[→ Detailed Skill Reference](docs/skills-reference.md)**
 
-| Command | Description |
-|---------|-------------|
-| `/sp:agents` | List all available agents with their expertise areas |
-| `/sp:analyze <message>` | Preview which agents would activate for a message |
-| `/sp:with <agent> <message>` | Force activation of specific agent |
-| `/sp:auto-agent-create` | Create custom agent interactively |
-| `/sp:config [key] [value]` | View or edit configuration |
-| `/sp:status` | Show system status and diagnostics |
+## Agent Personas
 
-## Available Agents
-
-13 specialized agents automatically activated based on context:
+13 specialized agents activate automatically based on context and complexity:
 
 ### Architecture & Design
-- **Frontend Architect** - React, Vue, Angular, UI/UX patterns
-- **Backend Architect** - APIs, microservices, system design
-- **System Architect** - Distributed systems, scalability, architecture decisions
+- **Frontend Architect** - React, Vue, Angular, UI/UX patterns, state management
+- **Backend Architect** - APIs, microservices, system design, data flow
+- **System Architect** - Distributed systems, scalability, infrastructure decisions
 
 ### Development Specialists
-- **JavaScript Expert** - Modern JS/TS, Node.js, npm ecosystem
+- **JavaScript Expert** - Modern JS/TS, Node.js, npm ecosystem, tooling
 - **Python Expert** - Python best practices, Django, FastAPI, data science
 - **Database Specialist** - SQL, NoSQL, query optimization, schema design
 
 ### Quality & Operations
 - **Testing Specialist** - Unit tests, integration tests, TDD, test frameworks
-- **Performance Engineer** - Optimization, profiling, benchmarking
-- **Security Engineer** - Vulnerability analysis, secure coding, auth
-- **DevOps Engineer** - CI/CD, Docker, K8s, deployment automation
+- **Performance Engineer** - Optimization, profiling, benchmarking, bottleneck analysis
+- **Security Engineer** - Vulnerability analysis, secure coding, authentication
+- **DevOps Engineer** - CI/CD, Docker, Kubernetes, deployment automation
 
 ### Integration & Documentation
 - **API Specialist** - REST, GraphQL, API design, integration patterns
-- **Code Reviewer** - Code quality, best practices, maintainability
-- **Technical Writer** - Documentation, API docs, user guides
+- **Code Reviewer** - Code quality, best practices, maintainability analysis
+- **Technical Writer** - Documentation, API docs, tutorials, user guides
+
+**[→ Detailed Agent Reference](docs/agents-reference.md)**
 
 ## How It Works
 
-### 1. Skills with Agent Hints
+### 1. Platform-Agnostic Core
 
-Skills contain context hints that trigger agent activation:
+All platforms share the same core framework:
+
+```
+core/
+├── orchestration/    # Agent activation logic
+│   ├── context-parser.js         # Extract hints from skill content
+│   ├── conditional-evaluator.js  # Parse IF/WHEN blocks
+│   └── agent-matcher.js          # Keyword-based scoring
+├── agents/           # 13 agent definitions (markdown)
+└── skills/           # 14 skills library (markdown)
+
+lib/
+├── index.js          # Core orchestration API
+├── agent-loader.js   # Agent definition loader
+└── skills-core.js    # Skill discovery and parsing
+```
+
+### 2. Platform Adapters
+
+Each platform has a specific integration layer:
+
+- **Gemini CLI**: MCP server with 5 tools + TOML slash commands
+- **Claude Code**: Plugin with SessionStart hooks + native Skill tool
+- **Codex**: CLI tool with fetch-and-follow bootstrap
+- **OpenCode**: Plugin with custom tools integration
+
+### 3. Agent Activation
+
+Skills contain natural language hints that trigger agent activation:
 
 ```markdown
-## Context Hints
+## Architecture Design
 
-When working on frontend architecture, consider:
-- Component design patterns
+When building React components, consider:
+- Component composition patterns
 - State management architecture
 - Performance optimization strategies
 
-This naturally activates the **Frontend Architect** agent.
+This activates the **Frontend Architect** agent.
 ```
 
-### 2. Conditional Agent Blocks
-
-Skills can explicitly activate agents with conditions:
+Or explicit conditional blocks:
 
 ```markdown
-## Conditional Blocks
-
-IF user_message contains "React" OR "component" OR "frontend"
-THEN ACTIVATE frontend-architect
+IF user_message contains "performance" OR "optimization" OR "slow"
+THEN ACTIVATE performance-engineer
 CONFIDENCE high
 ```
 
-### 3. Automatic Orchestration
+## Architecture Principles
 
-The `gemini-sp` wrapper analyzes message complexity:
-- Word count threshold (default: 50 words)
-- Technical keywords detection
-- Code block presence
-- Complexity score calculation
+### Platform Independence
+- **Core framework is platform-agnostic** - Works anywhere JavaScript runs
+- **Adapters are platform-specific** - Handle platform integration details
+- **Clean separation** - Core has zero platform dependencies
 
-When threshold met, agents are automatically activated and injected into the prompt.
+### Shared Skills and Agents
+- **One skills library** - All platforms use the same 14 skills
+- **One agent system** - All platforms use the same 13 agents
+- **Consistent workflows** - Same methodology across platforms
 
-## Configuration
+### Extensibility
+- **Custom skills** - Add domain-specific skills in `~/.supremepower/skills/`
+- **Custom agents** - Create specialized agents in `~/.supremepower/agents/`
+- **Platform adapters** - Add new platform integrations
 
-Configuration stored in `~/.supremepower/config.json`:
+**[→ Architecture Deep Dive](docs/architecture.md)**
 
-```json
-{
-  "version": "2.0.0",
-  "orchestration": {
-    "agentActivationThreshold": 8,
-    "detectionSensitivity": "medium"
-  },
-  "skills": {
-    "exposureMode": "commands",
-    "customSkillsPath": "~/.supremepower/skills"
-  },
-  "agents": {
-    "customAgentsPath": "~/.supremepower/agents",
-    "autoCreate": {
-      "enabled": true,
-      "confirmBeforeSave": true
-    }
-  },
-  "display": {
-    "showActivatedAgents": true,
-    "verbose": false
-  },
-  "wrapper": {
-    "enabled": true,
-    "complexity": {
-      "minWordCount": 50,
-      "requireKeywords": true
-    }
-  }
-}
+## Platform Comparison
+
+| Feature | Gemini CLI | Claude Code | Codex | OpenCode |
+|---------|-----------|-------------|-------|----------|
+| Agent Activation | MCP tools | Skill content hints | Manual invocation | Custom tools |
+| Slash Commands | Native TOML | N/A | N/A | N/A |
+| Skills Access | `/skills:*` commands | Skill tool | CLI commands | use_skill tool |
+| Configuration | JSON config file | Plugin settings | Environment vars | Plugin config |
+| Auto-orchestration | Smart wrapper | SessionStart hook | Bootstrap | Plugin loader |
+| Custom Agents | Interactive creator | File-based | File-based | File-based |
+| Installation | Native extension | Marketplace plugin | Git clone + CLI | Git clone + plugin |
+
+## Extending SupremePower
+
+### Add Custom Skills
+
+Create a new skill in `~/.supremepower/skills/my-skill/SKILL.md`:
+
+```markdown
+---
+name: my-custom-skill
+description: Use when you need to do X, Y, or Z
+---
+
+# My Custom Skill
+
+## Overview
+[Skill instructions...]
+
+## Conditional Blocks
+IF user_message contains "keyword"
+THEN ACTIVATE agent-name
 ```
 
-See [Configuration Reference](docs/configuration.md) for complete details.
+### Add Custom Agents
 
-## Examples
+Create a new agent in `~/.supremepower/agents/my-agent.md`:
 
-### Example 1: Automatic Agent Activation
+```markdown
+---
+name: my-custom-agent
+expertise:
+  - Domain expertise 1
+  - Domain expertise 2
+activation_keywords:
+  - keyword1
+  - keyword2
+complexity_threshold: medium
+---
 
-```bash
-gemini-sp "I need to optimize our React app's rendering performance. \
-The component tree is deep and we're seeing lag on user interactions."
+# My Custom Agent
+
+You are an expert in [domain].
+
+[Detailed persona description...]
 ```
 
-**Activated agents:** Frontend Architect, Performance Engineer
+**[→ Complete Extension Guide](docs/extending.md)**
 
-### Example 2: Explicit Skill Invocation
+## Documentation
 
-```bash
-# Use short alias
-/tdd
+### Platform Guides
+- **[Gemini CLI Guide](docs/platforms/gemini-cli.md)** - Installation, usage, slash commands, configuration
+- **[Claude Code Guide](docs/platforms/claude-code.md)** - Plugin installation, skills usage, hooks
+- **[Codex Guide](docs/platforms/codex.md)** - Bootstrap installation, CLI commands, workflows
+- **[OpenCode Guide](docs/platforms/opencode.md)** - Plugin installation, custom tools, integration
 
-# Or use full command name
-/skills:test-driven-development
+### Reference
+- **[Skills Reference](docs/skills-reference.md)** - All 14 skills with examples
+- **[Agents Reference](docs/agents-reference.md)** - All 13 agents with expertise areas
+- **[Architecture](docs/architecture.md)** - Framework design and integration patterns
+- **[Extending Guide](docs/extending.md)** - Custom skills and agents creation
 
-# Both activate Testing Specialist agent automatically
-# and guide through Red-Green-Refactor cycle
+### Development
+- **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to SupremePower
+- **[Testing Guide](docs/testing.md)** - Testing infrastructure and methodology
+- **[Platform Integration](docs/platform-integration.md)** - Add support for new platforms
+
+## Project Structure
+
 ```
-
-### Example 3: Custom Agent Creation
-
-```bash
-/sp:auto-agent-create
-# Interactive prompt to create domain-specific agent
-# Analyzes project context to suggest specializations
-# Saves to ~/.supremepower/agents/
-```
-
-### Example 4: Agent Management
-
-```bash
-# List all available agents
-/sp:agents
-
-# Preview which agents would activate for a message
-/sp:analyze "optimize database queries"
-
-# Force specific agent regardless of auto-detection
-/sp:with database-specialist "help with indexing"
-
-# View current configuration
-/sp:config
-
-# Check system status
-/sp:status
+superpowers/
+├── core/                          # Platform-agnostic framework
+│   ├── orchestration/            # Agent activation engine
+│   ├── agents/                   # 13 agent personas
+│   └── skills/                   # 14 skills library
+├── lib/                           # Core exports
+│   ├── index.js                  # Orchestration API
+│   ├── agent-loader.js           # Agent loading
+│   └── skills-core.js            # Skill discovery
+├── .claude-plugin/                # Claude Code adapter
+├── .codex/                        # Codex adapter
+├── .opencode/                     # OpenCode adapter
+├── mcp-server/                    # Gemini CLI adapter (MCP)
+├── commands/                      # Gemini CLI slash commands
+├── scripts/                       # Gemini CLI wrapper
+└── docs/                          # Documentation
+    ├── platforms/                # Platform-specific guides
+    ├── plans/                    # Implementation plans
+    └── *.md                      # Reference docs
 ```
 
 ## Development
 
-### Project Structure
-
-```
-supremepower-gemini/
-├── core/                  # Core framework
-│   ├── agents/           # Agent definitions (13 agents)
-│   ├── skills/           # Superpowers skills (14 skills)
-│   └── orchestration/    # Orchestration engine
-├── mcp-server/           # Gemini CLI MCP server
-│   └── src/
-│       ├── server.ts     # Main MCP server
-│       └── lib/          # Libraries (config, agent-loader)
-├── commands/             # Slash commands (TOML format)
-│   └── sp/              # Management commands
-├── scripts/              # Utilities
-│   ├── gemini-sp        # Smart wrapper script
-│   ├── wrapper-lib.js   # Wrapper orchestration logic
-│   └── install.sh       # Post-install setup
-└── docs/                # Documentation
-```
-
 ### Running Tests
 
 ```bash
+npm install
 npm test                 # Run all tests
 npm run test:watch      # Watch mode
 npm run test:coverage   # Coverage report
@@ -289,11 +316,11 @@ npm run test:coverage   # Coverage report
 ### Building
 
 ```bash
-npm run build           # Compile TypeScript
-npm run dev            # Watch mode for development
+npm run build           # Compile TypeScript (Gemini adapter)
+npm run dev            # Watch mode
 ```
 
-## Contributing
+### Contributing
 
 Contributions welcome! Please:
 
@@ -303,35 +330,63 @@ Contributions welcome! Please:
 4. Ensure all tests pass
 5. Submit a pull request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## Roadmap
 
-### Phase 2 (Current)
-- Gemini CLI integration via MCP
-- Slash command system
-- Smart wrapper script
-- Configuration management
+### Phase 1 (Complete) ✅
+- Platform-agnostic orchestration engine
+- 13 agent personas with keyword-based activation
+- 14 Superpowers skills library
+- Claude Code plugin integration
+
+### Phase 2 (Complete) ✅
+- Gemini CLI MCP extension
+- 25 slash commands (14 skills + 6 management + 5 aliases)
+- Smart wrapper script with complexity detection
+- JSON configuration management
 
 ### Phase 3 (Planned)
-- GitHub Copilot adapter
+- GitHub Copilot adapter with instructions system
 - VS Code extension
+- Enhanced multi-agent collaboration patterns
+- Agent learning and adaptation
+
+### Phase 4 (Future)
+- Cursor integration
+- Windsurf integration
 - Multi-platform CLI tool
-- Enhanced agent learning
+- Agent marketplace
+
+## Philosophy
+
+SupremePower embodies disciplined software development:
+
+- **Test-Driven Development** - Write tests first, always
+- **Systematic Debugging** - Form hypotheses, test scientifically
+- **Code Review** - Catch issues before they cascade
+- **Planning** - Think before coding, document decisions
+- **Worktrees** - Isolate work, reduce context switching
+
+These workflows work because they're **universal principles**, not platform-specific tricks. SupremePower makes them accessible in any AI coding environment.
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
-## Support
-
-- GitHub Issues: [Report bugs or request features](https://github.com/superclaude-org/supremepower-gemini/issues)
-- Documentation: [docs/](docs/)
-- Examples: [examples/](examples/)
-
 ## Acknowledgments
 
 Built on:
 - **Superpowers** - Disciplined development methodology by Anthropic
-- **SuperGemini** - Agent orchestration concepts
 - **MCP SDK** - Model Context Protocol by Anthropic
+- **Community contributions** - Skills and agents from developers worldwide
+
+## Support
+
+- **GitHub Issues**: [Report bugs or request features](https://github.com/abudhahir/superpowers/issues)
+- **Discussions**: [Ask questions and share experiences](https://github.com/abudhahir/superpowers/discussions)
+- **Documentation**: [docs/](docs/)
+
+---
+
+**Choose your platform above to get started, or read the [Architecture Guide](docs/architecture.md) to understand how SupremePower works.**

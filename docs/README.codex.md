@@ -1,5 +1,15 @@
 # Superpowers for Codex
 
+⚠️ **This guide has moved!**
+
+For the complete, up-to-date guide to using SupremePower with Codex, see:
+
+**[→ Full Codex Guide](platforms/codex.md)**
+
+---
+
+## Quick Reference
+
 Complete guide for using Superpowers with OpenAI Codex.
 
 ## Quick Install
