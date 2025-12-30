@@ -2,14 +2,15 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs/promises';
-import * as fs_std from 'fs';
 import { StateManager } from './lib/state-manager';
 import { SkillParser } from './lib/skill-parser';
 import { ContextGenerator } from './lib/context-generator';
 import { WorkflowProvider } from './workflow-provider';
-import { WorkflowStatusBar } from './status-bar';
+import { StatusBar } from './status-bar';
+import { TddWatcher } from './watchers/tdd-watcher';
+import { registerChatParticipant } from './chat/participant';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const homeDir = os.homedir();
   const statePath = path.join(homeDir, '.supremepower', 'state.json');
   const skillsPath = path.join(homeDir, '.supremepower', 'skills');
@@ -18,17 +19,23 @@ export function activate(context: vscode.ExtensionContext) {
   const workflowProvider = new WorkflowProvider(stateManager, skillsPath);
   vscode.window.registerTreeDataProvider('supremepower-workflow', workflowProvider);
 
-  const statusBar = new WorkflowStatusBar(stateManager);
-  context.subscriptions.push(statusBar);
+  const statusBar = new StatusBar();
+  const tddWatcher = new TddWatcher(stateManager);
+  tddWatcher.start();
 
-  // Watch for external state changes (e.g. from CLI)
+  registerChatParticipant(context, stateManager, skillsPath);
+
+  stateManager.onStateChanged((newState) => {
+    statusBar.update(newState);
+    workflowProvider.refresh();
+  });
+
+  // Initial load
   try {
-    fs_std.watchFile(statePath, { interval: 1000 }, async () => {
-      workflowProvider.refresh();
-      await statusBar.update();
-    });
+    const initialState = await stateManager.load();
+    statusBar.update(initialState);
   } catch (e) {
-    console.warn('Failed to setup state watcher', e);
+    console.error('Failed to load initial state', e);
   }
 
   async function updateCopilotContext(state: any, stepInstructions: string) {
@@ -73,22 +80,20 @@ export function activate(context: vscode.ExtensionContext) {
         
         await updateCopilotContext(newState, nextStep.context.join('\n'));
       }
-      workflowProvider.refresh();
-      await statusBar.update();
     } catch (e: any) {
       vscode.window.showErrorMessage(`Error: ${e.message}`);
     }
   });
 
-  let prevStepCmd = vscode.commands.registerCommand('supremepower.previousStep', async () => {
+  let previousStepCmd = vscode.commands.registerCommand('supremepower.previousStep', async () => {
     try {
       const state = await stateManager.load();
       if (!state.session.activeSkill) {
+        vscode.window.showErrorMessage('No active skill session.');
         return;
       }
 
-      const prevIndex = state.workflow.stepIndex - 1;
-      if (prevIndex < 0) {
+      if (state.workflow.stepIndex <= 0) {
         vscode.window.showInformationMessage('Already at the first step.');
         return;
       }
@@ -96,17 +101,15 @@ export function activate(context: vscode.ExtensionContext) {
       const skillFile = path.join(skillsPath, state.session.activeSkill, 'SKILL.md');
       const skillContent = await fs.readFile(skillFile, 'utf8');
       const steps = SkillParser.parseSteps(skillContent);
-      const prevStep = steps[prevIndex];
+      const prevIndex = state.workflow.stepIndex - 1;
 
+      const prevStep = steps[prevIndex];
       const newState = await stateManager.update({
         workflow: { ...state.workflow, currentStep: prevStep.name, stepIndex: prevIndex }
       });
+      vscode.window.showInformationMessage(`Moved back to: ${prevStep.name}`);
       
-      vscode.window.showInformationMessage(`Returned to: ${prevStep.name}`);
       await updateCopilotContext(newState, prevStep.context.join('\n'));
-      
-      workflowProvider.refresh();
-      await statusBar.update();
     } catch (e: any) {
       vscode.window.showErrorMessage(`Error: ${e.message}`);
     }
@@ -128,15 +131,25 @@ export function activate(context: vscode.ExtensionContext) {
         
         vscode.window.showInformationMessage(`Started skill: ${skill}`);
         await updateCopilotContext(newState, firstStep.context.join('\n'));
-        workflowProvider.refresh();
-        await statusBar.update();
       } catch (e: any) {
         vscode.window.showErrorMessage(`Failed to start skill: ${e.message}`);
       }
     }
   });
 
-  context.subscriptions.push(nextStepCmd, prevStepCmd, startSkillCmd);
+  let showMenuCmd = vscode.commands.registerCommand('supremepower.showMenu', async () => {
+    const items = [
+      { label: 'Next Step', command: 'supremepower.nextStep' },
+      { label: 'Previous Step', command: 'supremepower.previousStep' },
+      { label: 'Start Skill', command: 'supremepower.startSkill' }
+    ];
+    const selection = await vscode.window.showQuickPick(items);
+    if (selection) {
+      vscode.commands.executeCommand(selection.command);
+    }
+  });
+
+  context.subscriptions.push(nextStepCmd, previousStepCmd, startSkillCmd, showMenuCmd, statusBar, tddWatcher);
 }
 
 export function deactivate() {}

@@ -34,10 +34,13 @@ describe('Extension Integration', () => {
     it('should register all 5 MCP tools', () => {
       const tools = mcpServerResult.listTools();
 
-      expect(tools).toHaveLength(5);
+      expect(tools).toHaveLength(6);
       expect(tools).toContain('activate_agents');
       expect(tools).toContain('get_agent_persona');
       expect(tools).toContain('list_skills');
+      expect(tools).toContain('fetch_skills');
+      expect(tools).toContain('auto_agent_create');
+      expect(tools).toContain('next_step');
       expect(tools).toContain('fetch_skills');
       expect(tools).toContain('auto_agent_create');
     });
