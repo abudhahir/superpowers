@@ -6,8 +6,9 @@ import { StateManager } from './lib/state-manager';
 import { SkillParser } from './lib/skill-parser';
 import { ContextGenerator } from './lib/context-generator';
 import { WorkflowProvider } from './workflow-provider';
+import { StatusBar } from './status-bar';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const homeDir = os.homedir();
   const statePath = path.join(homeDir, '.supremepower', 'state.json');
   const skillsPath = path.join(homeDir, '.supremepower', 'skills');
@@ -15,6 +16,16 @@ export function activate(context: vscode.ExtensionContext) {
 
   const workflowProvider = new WorkflowProvider(stateManager, skillsPath);
   vscode.window.registerTreeDataProvider('supremepower-workflow', workflowProvider);
+
+  const statusBar = new StatusBar();
+
+  // Initial load
+  try {
+    const initialState = await stateManager.load();
+    statusBar.update(initialState);
+  } catch (e) {
+    console.error('Failed to load initial state', e);
+  }
 
   async function updateCopilotContext(state: any, stepInstructions: string) {
     if (vscode.workspace.workspaceFolders) {
@@ -45,10 +56,11 @@ export function activate(context: vscode.ExtensionContext) {
       const nextIndex = state.workflow.stepIndex + 1;
 
       if (nextIndex >= steps.length) {
-        await stateManager.update({
+        const newState = await stateManager.update({
           workflow: { ...state.workflow, currentStep: 'COMPLETED', stepIndex: nextIndex }
         });
         vscode.window.showInformationMessage('Workflow complete!');
+        statusBar.update(newState);
       } else {
         const nextStep = steps[nextIndex];
         const newState = await stateManager.update({
@@ -57,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`Advanced to: ${nextStep.name}`);
         
         await updateCopilotContext(newState, nextStep.context.join('\n'));
+        statusBar.update(newState);
       }
       workflowProvider.refresh();
     } catch (e: any) {
@@ -81,13 +94,25 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(`Started skill: ${skill}`);
         await updateCopilotContext(newState, firstStep.context.join('\n'));
         workflowProvider.refresh();
+        statusBar.update(newState);
       } catch (e: any) {
         vscode.window.showErrorMessage(`Failed to start skill: ${e.message}`);
       }
     }
   });
 
-  context.subscriptions.push(nextStepCmd, startSkillCmd);
+  let showMenuCmd = vscode.commands.registerCommand('supremepower.showMenu', async () => {
+    const items = [
+      { label: 'Next Step', command: 'supremepower.nextStep' },
+      { label: 'Start Skill', command: 'supremepower.startSkill' }
+    ];
+    const selection = await vscode.window.showQuickPick(items);
+    if (selection) {
+      vscode.commands.executeCommand(selection.command);
+    }
+  });
+
+  context.subscriptions.push(nextStepCmd, startSkillCmd, showMenuCmd, statusBar);
 }
 
 export function deactivate() {}
