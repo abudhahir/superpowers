@@ -1,0 +1,10 @@
+description = "Use when you have a spec or requirements for a multi-step task, before touching code"
+prompt = """
+I'm using the writing-plans skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/writing-plans/SKILL.md"

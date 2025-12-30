@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Smart wrapper for Gemini CLI with SupremePower orchestration
+
+USER_MESSAGE="$*"
+
+# Quick check: if slash command, pass through
+if [[ "$USER_MESSAGE" =~ ^/ ]]; then
+  exec gemini "$@"
+fi
+
+# Check complexity and orchestrate if needed
+NODE_SCRIPT="
+import { orchestrateAndEnhance } from './scripts/wrapper-lib.js';
+const enhanced = await orchestrateAndEnhance(process.argv[1]);
+console.log(enhanced);
+"
+
+ENHANCED_PROMPT=$(node --input-type=module -e "$NODE_SCRIPT" "$USER_MESSAGE" 2>/dev/null)
+
+if [ $? -eq 0 ] && [ -n "$ENHANCED_PROMPT" ]; then
+  # Orchestration succeeded, use enhanced prompt
+  exec gemini "$ENHANCED_PROMPT"
+else
+  # Orchestration failed, fallback to original
+  echo "[Warning: Agent orchestration failed, continuing without agents]" >&2
+  exec gemini "$USER_MESSAGE"
+fi

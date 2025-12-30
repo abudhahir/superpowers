@@ -1,0 +1,9 @@
+description = "Force specific agents for this request"
+prompt = """
+I'll activate the specified agents for this request.
+
+Agents: ${agents}
+Request: ${message}
+
+Calling orchestration with forced agents...
+"""

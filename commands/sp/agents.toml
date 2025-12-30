@@ -1,0 +1,6 @@
+description = "List all available agents"
+prompt = """
+Let me list all available agents with their expertise areas.
+"""
+
+# Calls list_skills MCP tool

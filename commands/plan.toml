@@ -1,0 +1,10 @@
+description = "Create implementation plan (alias for writing-plans)"
+prompt = """
+I'm using the writing-plans skill to create the implementation plan.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/writing-plans/SKILL.md"

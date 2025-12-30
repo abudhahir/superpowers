@@ -1,0 +1,15 @@
+{
+  "name": "supremepower",
+  "version": "2.0.0",
+  "description": "Universal skills and agent framework for coding agents",
+  "author": "SupremePower",
+  "postInstall": "bash scripts/install.sh",
+  "mcpServers": {
+    "supremepower": {
+      "command": "node",
+      "args": ["mcp-server/dist/server.js"],
+      "cwd": "${extensionPath}",
+      "timeout": 5000
+    }
+  }
+}

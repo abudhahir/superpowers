@@ -1,0 +1,10 @@
+description = "Test-Driven Development methodology"
+prompt = """
+I'm using the test-driven-development skill.
+
+${input}
+"""
+
+[[context]]
+type = "file"
+path = "skills/test-driven-development/SKILL.md"

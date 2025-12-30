@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "./mcp-server/dist",
+    "rootDir": "./mcp-server/src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true
+  },
+  "include": ["mcp-server/src/**/*"],
+  "exclude": ["node_modules", "tests", "mcp-server/dist"]
+}
