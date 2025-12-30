@@ -1,25 +1,87 @@
 import * as vscode from 'vscode';
+import * as path from 'path';
+import * as os from 'os';
+import * as fs from 'fs/promises';
+import { StateManager } from './lib/state-manager';
+import { SkillParser } from './lib/skill-parser';
+import { ContextGenerator } from './lib/context-generator';
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('SupremePower extension is now active!');
+  const homeDir = os.homedir();
+  const statePath = path.join(homeDir, '.supremepower', 'state.json');
+  const skillsPath = path.join(homeDir, '.supremepower', 'skills');
+  const stateManager = new StateManager(statePath);
 
-  let nextStepCmd = vscode.commands.registerCommand('supremepower.nextStep', () => {
-    vscode.window.showInformationMessage('Advancing to next step...');
-    // TODO: Call StateManager and ContextBridge
-  });
+  async function updateCopilotContext(state: any, stepInstructions: string) {
+    if (vscode.workspace.workspaceFolders) {
+      const repoRoot = vscode.workspace.workspaceFolders[0].uri.fsPath;
+      const copilotPath = path.join(repoRoot, '.github', 'supremepower-active.md');
+      const delta = ContextGenerator.generateDelta(state, stepInstructions);
+      
+      try {
+        await fs.mkdir(path.dirname(copilotPath), { recursive: true });
+        await fs.writeFile(copilotPath, delta, 'utf8');
+      } catch (e: any) {
+        vscode.window.showErrorMessage(`Failed to update Copilot context: ${e.message}`);
+      }
+    }
+  }
 
-  let prevStepCmd = vscode.commands.registerCommand('supremepower.previousStep', () => {
-    vscode.window.showInformationMessage('Going back to previous step...');
+  let nextStepCmd = vscode.commands.registerCommand('supremepower.nextStep', async () => {
+    try {
+      const state = await stateManager.load();
+      if (!state.session.activeSkill) {
+        vscode.window.showErrorMessage('No active skill session.');
+        return;
+      }
+
+      const skillFile = path.join(skillsPath, state.session.activeSkill, 'SKILL.md');
+      const skillContent = await fs.readFile(skillFile, 'utf8');
+      const steps = SkillParser.parseSteps(skillContent);
+      const nextIndex = state.workflow.stepIndex + 1;
+
+      if (nextIndex >= steps.length) {
+        await stateManager.update({
+          workflow: { ...state.workflow, currentStep: 'COMPLETED', stepIndex: nextIndex }
+        });
+        vscode.window.showInformationMessage('Workflow complete!');
+      } else {
+        const nextStep = steps[nextIndex];
+        const newState = await stateManager.update({
+          workflow: { ...state.workflow, currentStep: nextStep.name, stepIndex: nextIndex }
+        });
+        vscode.window.showInformationMessage(`Advanced to: ${nextStep.name}`);
+        
+        await updateCopilotContext(newState, nextStep.context.join('\n'));
+      }
+    } catch (e: any) {
+      vscode.window.showErrorMessage(`Error: ${e.message}`);
+    }
   });
 
   let startSkillCmd = vscode.commands.registerCommand('supremepower.startSkill', async () => {
     const skill = await vscode.window.showInputBox({ prompt: 'Enter skill name' });
     if (skill) {
-      vscode.window.showInformationMessage(`Starting skill: ${skill}`);
+      const skillFile = path.join(skillsPath, skill, 'SKILL.md');
+      try {
+        const skillContent = await fs.readFile(skillFile, 'utf8');
+        const steps = SkillParser.parseSteps(skillContent);
+        const firstStep = steps[0];
+        
+        const newState = await stateManager.update({
+          session: { activeSkill: skill, id: Date.now().toString() },
+          workflow: { currentStep: firstStep.name, stepIndex: 0, completedSteps: [], context: {} }
+        });
+        
+        vscode.window.showInformationMessage(`Started skill: ${skill}`);
+        await updateCopilotContext(newState, firstStep.context.join('\n'));
+      } catch (e: any) {
+        vscode.window.showErrorMessage(`Failed to start skill: ${e.message}`);
+      }
     }
   });
 
-  context.subscriptions.push(nextStepCmd, prevStepCmd, startSkillCmd);
+  context.subscriptions.push(nextStepCmd, startSkillCmd);
 }
 
 export function deactivate() {}
