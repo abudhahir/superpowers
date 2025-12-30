@@ -1,5 +1,15 @@
 # Superpowers for OpenCode
 
+⚠️ **This guide has moved!**
+
+For the complete, up-to-date guide to using SupremePower with OpenCode, see:
+
+**[→ Full OpenCode Guide](platforms/opencode.md)**
+
+---
+
+## Quick Reference
+
 Complete guide for using Superpowers with [OpenCode.ai](https://opencode.ai).
 
 ## Quick Install
