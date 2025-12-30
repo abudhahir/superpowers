@@ -8,6 +8,11 @@ export default {
     '**/__tests__/**/*.js',
     '**/*.test.js'
   ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    // Ignore mcp-tools.test.js as it uses Node's built-in test runner (node:test)
+    'tests/integration/tools/mcp-tools.test.js'
+  ],
   collectCoverageFrom: [
     'core/**/*.js',
     'lib/**/*.js',
